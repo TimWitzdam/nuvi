@@ -42,7 +42,7 @@ export default function BaseInput(props: Props) {
   return (
     <div
       className={
-        "bg-white relative border-2 border-black w-fit rounded-xl focus-within:bg-gray-100 transition-all flex items-center pr-4" +
+        "bg-white relative border-2 border-black w-fit rounded-xl focus-within:bg-gray-100 transition-colors flex items-center pr-4" +
         (disabled ? " bg-white bg-opacity-10" : "") +
         " " +
         classname

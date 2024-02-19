@@ -12,7 +12,7 @@ export default function BaseButton(props: Props) {
   return (
     <button
       className={
-        "bg-primary w-fit text-white p-4 rounded-xl transition-all flex items-center justify-center" +
+        "bg-primary w-fit text-white p-4 rounded-xl flex items-center justify-center hover:bg-[#25AFE9] transition-colors" +
         (disabled ? " bg-white bg-opacity-10" : "") +
         " " +
         classname

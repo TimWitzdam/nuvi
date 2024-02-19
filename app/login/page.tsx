@@ -12,15 +12,15 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   return (
-    <div>
-      <div className="pt-6 px-6 mb-20">
+    <div className="pt-6 px-6 max-w-4xl mx-auto">
+      <div className="mb-20">
         <Image src={NuviLogo} alt="Nuvi logo" width={100} />
       </div>
-      <div className="px-6">
-        <h1 className="text-2xl font-bold mb-2">
+      <div>
+        <h1 className="text-2xl font-bold mb-2 md:text-center">
           Login to {nuviConfig.identity.name}'s nuvi
         </h1>
-        <p className="opacity-60 mb-4">
+        <p className="opacity-60 mb-8 md:text-center">
           Welcome to nuvi, the simplest and free to use todo list
         </p>
         <form action="submit">
@@ -29,7 +29,7 @@ export default function Login() {
             type="text"
             placeholder="@username"
             onChange={(e) => setUsername(e.target.value)}
-            classname="w-full mb-4"
+            classname="w-full mb-4 md:w-2/3 mx-auto"
             autocomplete="username"
           />
           <BaseInput
@@ -37,13 +37,13 @@ export default function Login() {
             type="password"
             placeholder="password"
             onChange={(e) => setPassword(e.target.value)}
-            classname="w-full"
+            classname="w-full md:w-2/3 mx-auto"
             autocomplete="current-password"
           />
           <BaseButton
             id="login"
             type="submit"
-            classname="w-full mt-4"
+            classname="w-full mt-4 md:w-2/3 mx-auto"
             onClick={(e) => {
               e.preventDefault();
               console.log(username);
