@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import NuviLogo from "@/public/nuvi-logo.svg";
-import MenuButton from "@/app/_components/MenuButton";
 import TodoList from "@/app/_components/TodoList";
 import Cross from "@/public/cross.svg";
 

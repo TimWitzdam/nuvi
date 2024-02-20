@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import NuviLogo from "@/public/nuvi-logo.svg";
-import MenuButton from "@/app/_components/MenuButton";
+import MenuButton from "@/app/_components/TopMenu/MenuButton";
 import { useState } from "react";
-import AppMenu from "../_components/AppMenu";
-import ListMenu from "../_components/ListMenu";
+import AppMenu from "@/app/_components/TopMenu/AppMenu";
+import ListMenu from "@/app/_components/TopMenu/ListMenu";
 import { usePathname } from "next/navigation";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
