@@ -4,12 +4,31 @@ import Image from "next/image";
 import NuviLogo from "@/public/nuvi-logo.svg";
 import nuviConfig from "@/nuvi-config";
 import BaseInput from "../_components/BaseInput";
-import { useState } from "react";
 import BaseButton from "../_components/BaseButton";
+import { useState } from "react";
+import { login } from "@/app/actions/auth";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const router = useRouter();
+
+  async function handleLoginClick(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    try {
+      const authRes = await login(username, password);
+      if (authRes.status === "error") {
+        alert(authRes.message);
+        return;
+      }
+
+      router.push("/app");
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   return (
     <div className="pt-6 px-6 max-w-4xl mx-auto">
@@ -44,10 +63,7 @@ export default function Login() {
             id="login"
             type="submit"
             classname="w-full mt-4 md:w-2/3 mx-auto"
-            onClick={(e) => {
-              e.preventDefault();
-              console.log(username);
-            }}
+            onClick={handleLoginClick}
           >
             login
           </BaseButton>
