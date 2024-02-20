@@ -5,6 +5,7 @@ import Image from "next/image";
 import NuviLogo from "@/public/nuvi-logo.svg";
 import MenuButton from "@/app/_components/MenuButton";
 import TodoList from "@/app/_components/TodoList";
+import Cross from "@/public/cross.svg";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -38,24 +39,21 @@ export default function App() {
   }
 
   return (
-    <div className="pt-6 px-6 max-w-4xl mx-auto">
-      <div className="mb-14 flex items-center justify-between">
-        <Image src={NuviLogo} alt="Nuvi logo" width={100} />
-        <MenuButton onClick={() => console.log("Open Menu")} />
+    <div className="pt-6 px-6 max-w-4xl mx-auto mt-12">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold mb-2 md:text-center">Your lists</h1>
+        <button className="bg-black rounded-full w-10 h-10 grid place-content-center">
+          <Image
+            src={Cross}
+            alt="Add list icon"
+            width={30}
+            height={30}
+            className="rotate-45"
+          />
+        </button>
       </div>
-      <div>
-        <h1 className="text-2xl font-bold mb-2 md:text-center">Your lists</h1>
-        <div>
-          {loading ? (
-            <div>Loading...</div>
-          ) : (
-            <div>
-              {renderLists()}
-              {/* <TodoList name="Todo's" id="1" openTasks={43} /> */}
-            </div>
-          )}
-        </div>
-      </div>
+
+      <div>{loading ? <div>Loading...</div> : <div>{renderLists()}</div>}</div>
     </div>
   );
 }

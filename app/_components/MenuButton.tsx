@@ -1,14 +1,21 @@
 interface Props {
   onClick: () => void;
+  children: React.ReactNode;
+  open: boolean;
 }
 
 export default function MenuButton(props: Props) {
   return (
     <button
       onClick={props.onClick}
-      className="rounded-full w-10 h-10 border-2 border-black grid place-content-center hover:bg-black hover:text-white transition-colors"
+      className={`relative rounded-full w-10 h-10 border-2 border-black grid place-content-center hover:bg-black group ${
+        props.open && "bg-black"
+      }`}
     >
       <svg
+        className={`group-hover:text-white transition-colors ${
+          props.open && "text-white"
+        }`}
         width="23"
         height="5"
         viewBox="0 0 23 5"
@@ -28,6 +35,7 @@ export default function MenuButton(props: Props) {
           fill="currentColor"
         />
       </svg>
+      {props.children}
     </button>
   );
 }
