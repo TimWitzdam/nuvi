@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import Cross from "@/public/cross.svg";
+import BaseBox from "@/app/_components/BaseBox";
 
 interface Props {
   id: string;
@@ -41,9 +42,9 @@ export default function BaseInput(props: Props) {
   }
 
   return (
-    <div
-      className={
-        "bg-white relative border-2 border-black w-fit rounded-xl focus-within:bg-gray-100 transition-colors flex items-center pr-4" +
+    <BaseBox
+      classname={
+        "relative w-fit focus-within:bg-gray-100 transition-colors flex items-center pr-4" +
         (disabled ? " bg-white bg-opacity-10" : "") +
         " " +
         classname
@@ -82,6 +83,6 @@ export default function BaseInput(props: Props) {
     pointer-events: none;
   }`}
       </style>
-    </div>
+    </BaseBox>
   );
 }

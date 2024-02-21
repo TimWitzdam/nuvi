@@ -1,3 +1,5 @@
+import BaseBox from "@/app/_components/BaseBox";
+
 interface Props {
   isOpen: boolean;
   handleClick: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -6,11 +8,11 @@ interface Props {
 
 export default function AppMenu({ isOpen, handleClick, children }: Props) {
   return (
-    <div
-      className={`app-menu absolute bg-white top-10 right-0 rounded-xl border-2 border-black z-50 w-[250px] ${
+    <BaseBox
+      classname={`app-menu absolute top-10 right-0 z-50 w-[250px] ${
         isOpen ? "open" : "closed pointer-events-none"
       }`}
-      onClick={handleClick}
+      onClick={(e) => handleClick(e)}
     >
       {children}
       <style>
@@ -30,6 +32,6 @@ export default function AppMenu({ isOpen, handleClick, children }: Props) {
           }
         `}
       </style>
-    </div>
+    </BaseBox>
   );
 }
