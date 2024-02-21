@@ -11,29 +11,32 @@ import Add from "@/public/add.svg";
 import User from "@/public/user.svg";
 import Gears from "@/public/gears.svg";
 import Logout from "@/public/logout.svg";
+import Link from "next/link";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const path = usePathname();
 
   function renderMenuItems() {
-    if (path === "/app") {
-      return (
-        <div>
-          <MenuItem title="New list" link="/app/new-list" icon={Add} />
-          <MenuItem title="Manage users" link="/app/users" icon={User} />
-          <MenuItem title="Settings" link="/app/settings" icon={Gears} />
-          <MenuItem title="Log out" link="/app/logout" icon={Logout} last />
-        </div>
-      );
+    if (path.includes("/app/list/")) {
+      return null;
     }
-    return null;
+    return (
+      <div>
+        <MenuItem title="New list" link="/app/new-list" icon={Add} />
+        <MenuItem title="Manage users" link="/app/users" icon={User} />
+        <MenuItem title="Settings" link="/app/settings" icon={Gears} />
+        <MenuItem title="Log out" link="/app/logout" icon={Logout} last />
+      </div>
+    );
   }
 
   return (
     <div>
       <div className="pt-6 px-6 max-w-4xl mx-auto flex items-center justify-between">
-        <Image src={NuviLogo} alt="Nuvi logo" width={100} />
+        <Link href="/app">
+          <Image src={NuviLogo} alt="Nuvi logo" width={100} />
+        </Link>
         <MenuButton onClick={() => setMenuOpen(true)} open={menuOpen}>
           <AppMenu
             isOpen={menuOpen}

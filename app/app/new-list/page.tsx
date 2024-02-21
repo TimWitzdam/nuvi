@@ -138,7 +138,7 @@ export default function NewListPage() {
         ) : (
           selectedUsers.map((user) => (
             <div
-              className="rounded-lg border-2 border-black p-4 flex items-center justify-between"
+              className="rounded-xl border-2 border-black p-4 flex items-center justify-between"
               key={user.id}
             >
               <div className="flex items-center gap-4">

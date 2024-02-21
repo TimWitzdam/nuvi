@@ -7,7 +7,7 @@ interface Props {
 export default function AppMenu({ isOpen, handleClick, children }: Props) {
   return (
     <div
-      className={`app-menu absolute bg-white top-10 right-0 rounded-lg border-2 border-black z-50 w-[250px] ${
+      className={`app-menu absolute bg-white top-10 right-0 rounded-xl border-2 border-black z-50 w-[250px] ${
         isOpen ? "open" : "closed pointer-events-none"
       }`}
       onClick={handleClick}

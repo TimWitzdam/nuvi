@@ -65,7 +65,7 @@ export default function AddUserModal({ onClose, onSubmit }: Props) {
         className="fixed bg-black bg-opacity-60 top-0 left-0 w-screen h-screen z-40"
       ></div>
       <div className="fixed px-6 w-full  max-w-[500px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-        <div className="bg-white p-8 rounded-lg">
+        <div className="bg-white p-8 rounded-xl">
           {!showGeneratedPassword ? (
             <div>
               <h2 className="text-2xl font-bold mb-4">Add User</h2>
@@ -99,13 +99,13 @@ export default function AddUserModal({ onClose, onSubmit }: Props) {
                 <div className="flex justify-end gap-4 mt-8">
                   <button
                     onClick={onClose}
-                    className="p-4 rounded-lg border-2 border-black w-full"
+                    className="p-4 rounded-xl border-2 border-black w-full"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="p-4 rounded-lg bg-black text-white w-full"
+                    className="p-4 rounded-xl bg-black text-white w-full"
                   >
                     Add
                   </button>
@@ -128,7 +128,7 @@ export default function AddUserModal({ onClose, onSubmit }: Props) {
               </div>
               <button
                 onClick={handlePasswordClose}
-                className="p-4 rounded-lg bg-black text-white w-full"
+                className="p-4 rounded-xl bg-black text-white w-full"
               >
                 {copied ? "Close" : "Copy & Close"}
               </button>

@@ -51,7 +51,13 @@ export default function App() {
         </button>
       </div>
 
-      <div>{loading ? <div>Loading...</div> : <div>{renderLists()}</div>}</div>
+      <div>
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4">{renderLists()}</div>
+        )}
+      </div>
     </div>
   );
 }

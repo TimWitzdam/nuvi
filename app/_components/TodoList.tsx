@@ -14,7 +14,7 @@ export default function TodoList(props: Props) {
   return (
     <Link
       href={`/app/list/${props.id}`}
-      className="bg-white p-6 border-2 border-black rounded-lg flex items-center justify-between"
+      className="bg-white p-6 border-2 border-black rounded-xl flex items-center justify-between"
     >
       <div className="flex items-center gap-3">
         <Image src={List} alt="List icon" width={30} height={30} />
