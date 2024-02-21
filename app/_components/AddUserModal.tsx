@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import BaseInput from "./BaseInput";
+import BaseSelect from "./BaseSelect";
 
 interface Props {
   onClose: () => void;
@@ -84,15 +85,16 @@ export default function AddUserModal({ onClose, onSubmit }: Props) {
                     onChange={handleUserNameChange}
                     classname="mb-10 w-full"
                   />
-                  <select
+                  <BaseSelect
                     name="role"
-                    id="role"
-                    className="p-4 rounded-xl border-2 border-black outline-none focus:bg-gray-100 transition-colors w-full"
+                    options={[
+                      { label: "Collaborator", value: "Collaborator" },
+                      { label: "Admin", value: "Admin" },
+                    ]}
+                    defaultValue="Collaborator"
                     onChange={(e) => setRole(e.target.value)}
-                  >
-                    <option value="Collaborator">Collaborator</option>
-                    <option value="Admin">Admin</option>
-                  </select>
+                    classname="w-full"
+                  />
                 </div>
                 <div className="flex justify-end gap-4 mt-8">
                   <button

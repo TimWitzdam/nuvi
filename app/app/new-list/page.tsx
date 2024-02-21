@@ -9,6 +9,7 @@ import Transhcan from "@/public/trashcan.svg";
 import BaseButton from "@/app/_components/BaseButton";
 import AddUserModal from "@/app/_components/AddUserModal";
 import { useRouter } from "next/navigation";
+import BaseSelect from "@/app/_components/BaseSelect";
 
 interface User {
   id: string;
@@ -163,24 +164,22 @@ export default function NewListPage() {
           ))
         )}
       </div>
-      <select
-        ref={userSelect}
+      <BaseSelect
+        refRelation={userSelect}
         name="users"
-        id="users-select"
-        className="p-4 rounded-lg mb-20 border-2 border-black outline-none focus:bg-gray-100 transition-colors"
+        options={[
+          { label: "Add another user", value: "choose" },
+          { label: "Crease new user", value: "create" },
+          ...availableUsers.map((user) => ({
+            label: user.name,
+            value: user.id,
+          })),
+        ]}
+        defaultValue="choose"
+        defaultDisabled
         onChange={handleUserSelect}
-        defaultValue={"choose"}
-      >
-        <option value="choose" disabled>
-          Add another user
-        </option>
-        <option value="create">Create new user</option>
-        {availableUsers.map((user) => (
-          <option value={user.id} key={user.id}>
-            {user.name}
-          </option>
-        ))}
-      </select>
+        classname="mb-20"
+      />
       <BaseButton
         id="create-list"
         onClick={handleCreateListClick}
