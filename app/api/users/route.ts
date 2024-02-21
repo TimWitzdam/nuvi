@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Client } from "pg";
 import checkCookie from "@/utils/checkCookie";
 import bcrypt from "bcrypt";
+import { formatUserName } from "@/utils/format";
 
 export async function GET(req: Request) {
   const [userID, cookie, valid] = await checkCookie(req, true);
@@ -15,7 +16,7 @@ export async function GET(req: Request) {
 
   const users = await client.query(
     `
-        SELECT u.id, u.name, r.name as role 
+        SELECT u.id, u.name, CONCAT('@', u.username) AS username, r.name as role
         FROM users u
         LEFT JOIN roles r on u.role = r.id
         `
@@ -50,6 +51,8 @@ export async function POST(req: Request) {
 
   const encryptedPassword = await bcrypt.hash(password, 10);
 
+  const formattedUserName = formatUserName(userName);
+
   const newUser = await client.query(
     `
     INSERT INTO "users" (name, username, password, role)
@@ -59,7 +62,7 @@ export async function POST(req: Request) {
            )
     RETURNING id
         `,
-    [name, userName, encryptedPassword, role]
+    [name, formattedUserName, encryptedPassword, role]
   );
 
   client.end();

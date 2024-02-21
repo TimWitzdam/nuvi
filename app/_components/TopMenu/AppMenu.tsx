@@ -1,9 +1,3 @@
-import MenuItem from "./MenuItem";
-import Add from "@/public/add.svg";
-import User from "@/public/user.svg";
-import Gears from "@/public/gears.svg";
-import Logout from "@/public/logout.svg";
-
 interface Props {
   isOpen: boolean;
   handleClick: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -22,7 +16,7 @@ export default function AppMenu({ isOpen, handleClick, children }: Props) {
       <style>
         {`
           .app-menu {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
           }
           
           .app-menu.open {

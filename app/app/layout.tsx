@@ -21,7 +21,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       return (
         <div>
           <MenuItem title="New list" link="/app/new-list" icon={Add} />
-          <MenuItem title="Manage users" link="/app/manage-users" icon={User} />
+          <MenuItem title="Manage users" link="/app/users" icon={User} />
           <MenuItem title="Settings" link="/app/settings" icon={Gears} />
           <MenuItem title="Log out" link="/app/logout" icon={Logout} last />
         </div>
