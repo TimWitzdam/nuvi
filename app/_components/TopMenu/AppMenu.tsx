@@ -6,19 +6,19 @@ import Logout from "@/public/logout.svg";
 
 interface Props {
   isOpen: boolean;
+  handleClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  children: React.ReactNode;
 }
 
-export default function AppMenu({ isOpen }: Props) {
+export default function AppMenu({ isOpen, handleClick, children }: Props) {
   return (
     <div
       className={`app-menu absolute bg-white top-10 right-0 rounded-lg border-2 border-black z-50 w-[250px] ${
         isOpen ? "open" : "closed pointer-events-none"
       }`}
+      onClick={handleClick}
     >
-      <MenuItem title="New list" link="/app/new-list" icon={Add} />
-      <MenuItem title="Manage users" link="/app/manage-users" icon={User} />
-      <MenuItem title="Settings" link="/app/settings" icon={Gears} />
-      <MenuItem title="Log out" link="/app/logout" icon={Logout} last />
+      {children}
       <style>
         {`
           .app-menu {
