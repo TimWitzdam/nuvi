@@ -57,11 +57,12 @@ export async function POST(req: Request) {
                                         SELECT id FROM roles WHERE name = $4 LIMIT 1
                                      )
            )
+    RETURNING id
         `,
     [name, userName, encryptedPassword, role]
   );
 
   client.end();
 
-  return NextResponse.json({ message: "User added" });
+  return NextResponse.json({ message: "User added", id: newUser.rows[0].id });
 }

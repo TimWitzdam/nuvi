@@ -8,6 +8,7 @@ import Crown from "@/public/crown.svg";
 import Transhcan from "@/public/trashcan.svg";
 import BaseButton from "@/app/_components/BaseButton";
 import AddUserModal from "@/app/_components/AddUserModal";
+import { useRouter } from "next/navigation";
 
 interface User {
   id: string;
@@ -24,6 +25,8 @@ export default function NewListPage() {
   const [addUserModalOpen, setAddUserModalOpen] = useState(false);
 
   const userSelect = useRef<HTMLSelectElement>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     fetch("/api/users", {
@@ -83,14 +86,30 @@ export default function NewListPage() {
     fetch("/api/users", {
       method: "POST",
       body: JSON.stringify({ name, userName, role, password }),
-    });
-    const newUser = {
-      id: `user-${availableUsers.length + 1}`,
-      name,
-      role,
-    };
-    setSelectedUsers([...selectedUsers, newUser]);
-    closeAddUserModal();
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        const newUser = {
+          id: data.id,
+          name,
+          role,
+        };
+        setSelectedUsers([...selectedUsers, newUser]);
+        closeAddUserModal();
+      });
+  }
+
+  function handleCreateListClick() {
+    fetch("/api/todo/lists", {
+      method: "POST",
+      body: JSON.stringify({ name: listName, users: selectedUsers }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        router.replace(`/app/lists/${data.id}`);
+      });
   }
 
   return (
@@ -164,7 +183,7 @@ export default function NewListPage() {
       </select>
       <BaseButton
         id="create-list"
-        onClick={() => console.log("Create list")}
+        onClick={handleCreateListClick}
         classname="w-full"
       >
         Create list
