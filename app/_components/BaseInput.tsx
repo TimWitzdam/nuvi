@@ -14,7 +14,8 @@ interface Props {
   disabled?: boolean;
   autocomplete?: string;
   disableClear?: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
 }
 
 export default function BaseInput(props: Props) {
@@ -47,6 +48,11 @@ export default function BaseInput(props: Props) {
         " " +
         classname
       }
+      onClick={(e) =>
+        props.onClick
+          ? props.onClick(e as React.MouseEvent<HTMLInputElement>)
+          : null
+      }
     >
       <input
         ref={input}
@@ -58,7 +64,9 @@ export default function BaseInput(props: Props) {
         inputMode={inputMode}
         disabled={disabled}
         autoComplete={autocomplete}
-        onInput={(e) => onChange(e as React.ChangeEvent<HTMLInputElement>)}
+        onInput={(e) =>
+          onChange ? onChange(e as React.ChangeEvent<HTMLInputElement>) : null
+        }
       />
       {!disabled && !disableClear ? (
         <div

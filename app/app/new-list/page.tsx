@@ -21,7 +21,7 @@ export default function NewListPage() {
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [creatorID, setCreatorID] = useState<string>("");
   const [loading, setLoading] = useState(true);
-  const [addUserModalOpen, setAddUserModalOpen] = useState(true);
+  const [addUserModalOpen, setAddUserModalOpen] = useState(false);
 
   const userSelect = useRef<HTMLSelectElement>(null);
 
@@ -74,9 +74,33 @@ export default function NewListPage() {
     }
   }
 
+  function handleAddUserModalSubmit(
+    name: string,
+    userName: string,
+    role: string,
+    password: string
+  ) {
+    fetch("/api/users", {
+      method: "POST",
+      body: JSON.stringify({ name, userName, role, password }),
+    });
+    const newUser = {
+      id: `user-${availableUsers.length + 1}`,
+      name,
+      role,
+    };
+    setSelectedUsers([...selectedUsers, newUser]);
+    closeAddUserModal();
+  }
+
   return (
     <div className="pt-6 px-6 max-w-4xl mx-auto mt-8">
-      {addUserModalOpen && <AddUserModal onClose={closeAddUserModal} />}
+      {addUserModalOpen && (
+        <AddUserModal
+          onClose={closeAddUserModal}
+          onSubmit={handleAddUserModalSubmit}
+        />
+      )}
       <h1 className="text-3xl font-bold mb-6 md:text-center">
         Create new list
       </h1>
