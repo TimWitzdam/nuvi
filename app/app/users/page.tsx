@@ -8,6 +8,8 @@ import { formatUserName } from "@/utils/format";
 import BaseSelect from "@/app/_components/BaseSelect";
 import AddUserModal from "@/app/_components/AddUserModal";
 import BaseModal from "@/app/_components/BaseModal";
+import { toast } from "react-toastify";
+import { updateToast } from "@/utils/toast";
 
 interface User {
   id: string;
@@ -34,12 +36,20 @@ export default function UsersPage() {
       headers: {
         "Content-Type": "application/json",
       },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    }).then((res) => {
+      if (res.status === 500) {
+        toast("Internal server error, check server logs.", { type: "error" });
+        return;
+      }
+      return res.json().then((data) => {
+        if (res.status !== 200) {
+          toast(data.message, { type: "error" });
+          return;
+        }
         setUsers(data.allUsers);
         setLoading(false);
       });
+    });
   }, []);
 
   function renderUsers() {
@@ -76,14 +86,38 @@ export default function UsersPage() {
   }
 
   function resetPassword(id: string) {
+    const loadingToast = toast("Loading...", { isLoading: true });
     setResetPasswordClicked(null);
     fetch(`/api/users/reset-password`, {
       method: "POST",
       body: JSON.stringify({ id }),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        setResetPassword(data.password);
+      .then((res) => {
+        if (res.status === 500) {
+          updateToast(
+            loadingToast,
+            "Internal server error, check server logs.",
+            "error"
+          );
+          return;
+        }
+        return res.json().then((data) => {
+          updateToast(
+            loadingToast,
+            data.message,
+            res.status === 200 ? "success" : "error"
+          );
+          if (res.status !== 200) return;
+          setResetPassword(data.password);
+        });
+      })
+      .catch((error) => {
+        updateToast(
+          loadingToast,
+          "Unknown error occurred, check browser console.",
+          "error"
+        );
+        console.log(error);
       });
   }
 
@@ -109,21 +143,40 @@ export default function UsersPage() {
     role: string,
     password: string
   ) {
-    fetch("/api/users", {
+    const loadingToast = toast("Loading...", { isLoading: true });
+    fetch(`/api/users`, {
       method: "POST",
       body: JSON.stringify({ name, userName, role, password }),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        const newUser = {
-          id: data.id,
-          name,
-          username: userName,
-          role,
-        };
-        setUsers((prev) => [...prev, newUser]);
-        setShowAddUserModal(false);
+      .then((res) => {
+        if (res.status === 500) {
+          updateToast(
+            loadingToast,
+            "Internal server error, check server logs.",
+            "error"
+          );
+          return;
+        }
+        return res.json().then((data) => {
+          updateToast(
+            loadingToast,
+            data.message,
+            res.status === 200 ? "success" : "error"
+          );
+          if (res.status !== 200) return;
+          setUsers((prev) => [
+            ...prev,
+            { id: data.id, name, username: userName, role },
+          ]);
+        });
+      })
+      .catch((error) => {
+        updateToast(
+          loadingToast,
+          "Unknown error occurred, check browser console.",
+          "error"
+        );
+        console.log(error);
       });
   }
 
@@ -131,21 +184,42 @@ export default function UsersPage() {
     user: User,
     e: React.ChangeEvent<HTMLSelectElement>
   ) {
+    const loadingToast = toast("Loading...", { isLoading: true });
     const newRole = e.target.value;
+
     fetch(`/api/users`, {
       method: "PATCH",
       body: JSON.stringify({ id: user.id, role: newRole }),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        setUsers((prev) =>
-          prev.map((u) => {
-            if (u.id === user.id) {
-              return { ...u, role: newRole };
-            }
-            return u;
-          })
+      .then((res) => {
+        if (res.status === 500) {
+          updateToast(
+            loadingToast,
+            "Internal server error, check server logs.",
+            "error"
+          );
+
+          return;
+        }
+        return res.json().then((data) => {
+          updateToast(
+            loadingToast,
+            data.message,
+            res.status === 200 ? "success" : "error"
+          );
+          if (res.status !== 200) return;
+          setUsers((prev) =>
+            prev.map((u) => (u.id === user.id ? { ...u, role: newRole } : u))
+          );
+        });
+      })
+      .catch((error) => {
+        updateToast(
+          loadingToast,
+          "Unknown error occurred, check browser console.",
+          "error"
         );
+        console.log(error);
       });
   }
 
