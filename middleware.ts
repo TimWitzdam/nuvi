@@ -24,7 +24,7 @@ export async function middleware(request: NextRequest) {
     if (hasCookie) {
       return NextResponse.redirect(url.origin + "/app");
     }
-  } else if (url.pathname === "/app") {
+  } else if (url.pathname.includes("/app")) {
     const cookie = checkCookie(request);
 
     if (!cookie) {
@@ -47,3 +47,7 @@ export async function middleware(request: NextRequest) {
   }
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: ["/", "/login", "/app/:path*"],
+};
