@@ -6,8 +6,8 @@ import nuviConfig from "@/nuvi-config";
 import BaseInput from "../_components/BaseInput";
 import BaseButton from "../_components/BaseButton";
 import { useState } from "react";
-import { login } from "@/app/actions/auth";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -15,19 +15,33 @@ export default function Login() {
 
   const router = useRouter();
 
-  async function handleLoginClick(e: React.MouseEvent<HTMLButtonElement>) {
+  function handleLoginClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    try {
-      const authRes = await login(username, password);
-      if (authRes.status === "error") {
-        alert(authRes.message);
-        return;
-      }
-
-      router.push("/app");
-    } catch (e) {
-      console.error(e);
-    }
+    fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    })
+      .then((res) => {
+        if (res.status === 500) {
+          toast.error("Interal server error, check the server logs.");
+          return;
+        }
+        return res.json().then((data) => {
+          if (res.status !== 200) {
+            toast.error(data.message);
+          }
+          document.cookie = `nuvi-auth=${data.token}; path=/; max-age=2592000; samesite=strict; secure`;
+          router.push("/app");
+          return data;
+        });
+      })
+      .catch((error) => {
+        toast.error("Unknown error occurred, check browser console.");
+        console.error(error);
+      });
   }
 
   return (

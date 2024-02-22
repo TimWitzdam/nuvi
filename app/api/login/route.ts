@@ -1,15 +1,15 @@
-"use server";
-
 import { Client } from "pg";
 import bcrypt from "bcrypt";
-import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
-export async function login(username: string, password: string) {
+export async function POST(req: Request) {
+  const { username, password } = await req.json();
+
   if (!username || !password) {
-    return {
-      status: "error",
-      message: "Username and password are required",
-    };
+    return NextResponse.json(
+      { message: "Username and password are required" },
+      { status: 400 }
+    );
   }
 
   const client = new Client();
@@ -21,20 +21,16 @@ export async function login(username: string, password: string) {
   );
 
   if (res.rowCount === 0) {
-    return {
-      status: "error",
-      message: "User not found",
-    };
+    await client.end();
+    return NextResponse.json({ message: "User not found" }, { status: 400 });
   }
 
   const user = res.rows[0];
   const passwordMatch = await bcrypt.compare(password, user.password);
 
   if (!passwordMatch) {
-    return {
-      status: "error",
-      message: "Invalid password provided",
-    };
+    await client.end();
+    return NextResponse.json({ message: "Invalid password" }, { status: 400 });
   }
 
   const sessionToken = crypto.randomUUID();
@@ -46,14 +42,5 @@ export async function login(username: string, password: string) {
 
   await client.end();
 
-  cookies().set("nuvi-auth", sessionToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    path: "/",
-  });
-
-  return {
-    status: "ok",
-  };
+  return NextResponse.json({ token: sessionToken });
 }
