@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import BaseInput from "./BaseInput";
 import BaseSelect from "./BaseSelect";
+import { generateSecurePassword } from "@/utils/generatePassword";
 
 interface Props {
   onClose: () => void;
@@ -37,7 +38,7 @@ export default function AddUserModal({ onClose, onSubmit }: Props) {
   }
 
   function handleSubmitClick() {
-    const password = Math.random().toString(36).slice(-8);
+    const password = generateSecurePassword(8);
     setGeneratedPassword(password);
     setShowGeneratedPassword(true);
   }
