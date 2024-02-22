@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Cross from "@/public/cross.svg";
 import UserRounded from "@/public/user-rounded.svg";
 import { formatUserName } from "@/utils/format";
 import BaseSelect from "@/app/_components/BaseSelect";
 import AddUserModal from "@/app/_components/AddUserModal";
+import BaseModal from "@/app/_components/BaseModal";
 
 interface User {
   id: string;
@@ -19,6 +20,13 @@ export default function UsersPage() {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<User[]>([]);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [resettedPassword, setResetPassword] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [resetPasswordClicked, setResetPasswordClicked] = useState<User | null>(
+    null
+  );
+
+  const resettedPasswordSpan = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     fetch("/api/users", {
@@ -46,17 +54,53 @@ export default function UsersPage() {
             {user.name} ({user.username})
           </p>
         </div>
-        <BaseSelect
-          name={formatUserName(user.name)}
-          options={[
-            { label: "Admin", value: "Admin" },
-            { label: "Collaborator", value: "Collaborator" },
-          ]}
-          defaultValue={user.role}
-          onChange={(e) => console.log(e)}
-        />
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setResetPasswordClicked(user)}
+            className="p-4 rounded-xl bg-black text-white"
+          >
+            Reset Password
+          </button>
+          <BaseSelect
+            name={formatUserName(user.username)}
+            options={[
+              { label: "Admin", value: "Admin" },
+              { label: "Collaborator", value: "Collaborator" },
+            ]}
+            defaultValue={user.role}
+            onChange={(e) => console.log(e)}
+          />
+        </div>
       </div>
     ));
+  }
+
+  function resetPassword(id: string) {
+    setResetPasswordClicked(null);
+    fetch(`/api/users/reset-password`, {
+      method: "POST",
+      body: JSON.stringify({ id }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setResetPassword(data.password);
+      });
+  }
+
+  function copyResettedPassword() {
+    console.log("copy");
+    let range = document.createRange();
+    range.selectNodeContents(resettedPasswordSpan.current!);
+    let sel = window.getSelection()!;
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand("copy");
+    setCopied(true);
+  }
+
+  function handlePasswordClose() {
+    if (!copied) copyResettedPassword();
+    setResetPassword("");
   }
 
   function handleAddUserModalSubmit(
@@ -91,7 +135,54 @@ export default function UsersPage() {
           onSubmit={handleAddUserModalSubmit}
         />
       )}
-
+      {resetPasswordClicked && (
+        <BaseModal onClose={() => setResetPasswordClicked(null)}>
+          <h2 className="text-2xl font-bold mb-2">Reset password</h2>
+          <p className="mb-6">
+            <span className="opacity-60">
+              Are you sure you want to reset the password for{" "}
+            </span>
+            {resetPasswordClicked.name}
+            <span className="opacity-60">?</span>
+          </p>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setResetPasswordClicked(null)}
+              className="p-4 rounded-xl border-2 border-black w-full"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => resetPassword(resetPasswordClicked.id)}
+              className="p-4 rounded-xl bg-black text-white w-full"
+            >
+              Reset password
+            </button>
+          </div>
+        </BaseModal>
+      )}
+      {resettedPassword && (
+        <BaseModal onClose={() => setResetPassword("")}>
+          <h2 className="text-2xl font-bold mb-2">Reset password</h2>
+          <p className="opacity-60 mb-6">
+            Please provide this password to the user. He'll be asked to change
+            it when first logging in.
+          </p>
+          <p className="mb-2">The new password is:</p>
+          <div
+            onClick={copyResettedPassword}
+            className="rounded-xl border-2 border-black p-4 w-full mb-10"
+          >
+            <span ref={resettedPasswordSpan}>{resettedPassword}</span>
+          </div>
+          <button
+            onClick={handlePasswordClose}
+            className="p-4 rounded-xl bg-black text-white w-full"
+          >
+            {copied ? "Close" : "Copy & Close"}
+          </button>
+        </BaseModal>
+      )}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold mb-2 md:text-center">Manage users</h1>
         <button
