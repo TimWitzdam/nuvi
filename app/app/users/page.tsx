@@ -68,7 +68,7 @@ export default function UsersPage() {
               { label: "Collaborator", value: "Collaborator" },
             ]}
             defaultValue={user.role}
-            onChange={(e) => console.log(e)}
+            onChange={(e) => handleUserRoleChange(user, e)}
           />
         </div>
       </div>
@@ -124,6 +124,28 @@ export default function UsersPage() {
         };
         setUsers((prev) => [...prev, newUser]);
         setShowAddUserModal(false);
+      });
+  }
+
+  function handleUserRoleChange(
+    user: User,
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) {
+    const newRole = e.target.value;
+    fetch(`/api/users`, {
+      method: "PATCH",
+      body: JSON.stringify({ id: user.id, role: newRole }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setUsers((prev) =>
+          prev.map((u) => {
+            if (u.id === user.id) {
+              return { ...u, role: newRole };
+            }
+            return u;
+          })
+        );
       });
   }
 

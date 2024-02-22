@@ -19,6 +19,7 @@ export async function GET(req: Request) {
         SELECT u.id, u.name, CONCAT('@', u.username) AS username, r.name as role
         FROM users u
         LEFT JOIN roles r on u.role = r.id
+        ORDER BY u.create_time 
         `
   );
 
@@ -68,4 +69,39 @@ export async function POST(req: Request) {
   client.end();
 
   return NextResponse.json({ message: "User added", id: newUser.rows[0].id });
+}
+
+export async function PATCH(req: Request) {
+  const [userID, cookie, valid] = await checkCookie(req, true);
+
+  if (!valid) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id, role } = await req.json();
+
+  if (!id || !role) {
+    return NextResponse.json(
+      { message: "Missing required fields" },
+      { status: 400 }
+    );
+  }
+
+  const client = new Client();
+  await client.connect();
+
+  await client.query(
+    `
+    UPDATE users
+    SET role = (
+        SELECT id FROM roles WHERE name = $1 LIMIT 1
+    )
+    WHERE id = $2
+    `,
+    [role, id]
+  );
+
+  client.end();
+
+  return NextResponse.json({ message: "User role updated" });
 }
