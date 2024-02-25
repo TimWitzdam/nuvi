@@ -97,5 +97,9 @@ export async function POST(req: Request) {
 
   client.end();
 
-  return NextResponse.json({ message: "List created", id: newList.rows[0].id });
+  return NextResponse.json({
+    message: "List created",
+    id: newList.rows[0].id,
+    userID,
+  });
 }
