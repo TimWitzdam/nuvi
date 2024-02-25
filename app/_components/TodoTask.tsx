@@ -23,8 +23,6 @@ export default function TodoTask({ id, content, open, tickClick }: Props) {
     }, 3000);
   }
 
-  console.log(open);
-
   return open ? (
     <div className="py-4 flex items-center gap-4 border-b-2 border-black border-opacity-20">
       <button

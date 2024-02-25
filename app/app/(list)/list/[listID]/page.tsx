@@ -1,7 +1,8 @@
 "use client";
 
 import TodoTask from "@/app/_components/TodoTask";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 
 interface Task {
@@ -18,14 +19,23 @@ export default function SingleListPage({
 }) {
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  const [socketUrl, setSocketUrl] = useState("ws://localhost:3000/api/todo/ws");
-  const [messageHistory, setMessageHistory] = useState<MessageEvent<string>[]>(
-    []
-  );
+  let hostname = "";
+  if (typeof window !== "undefined") {
+    hostname = `${window.location.hostname}:${window.location.port}`;
+  }
 
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
-    shouldReconnect: (closeEvent) => true,
-  });
+  const { sendMessage, lastMessage, readyState } = useWebSocket(
+    `ws://${hostname}/api/todo/ws`,
+    {
+      shouldReconnect: (closeEvent) => true,
+      reconnectAttempts: 100,
+      onReconnectStop: (closeEvent) => {
+        toast.error("Websocket connection failed, please refresh the page", {
+          autoClose: false,
+        });
+      },
+    }
+  );
 
   useEffect(() => {
     fetch(`/api/todo/list/${params.listID}`)
@@ -49,7 +59,6 @@ export default function SingleListPage({
 
   useEffect(() => {
     if (lastMessage !== null) {
-      setMessageHistory((prev) => prev.concat([lastMessage]));
       const parsedMessage = JSON.parse(lastMessage?.data.toString());
       if (parsedMessage.action === "tick") {
         if (parsedMessage.status === "ok") {
@@ -66,7 +75,7 @@ export default function SingleListPage({
       }
       console.log("Message from server ", lastMessage?.data);
     }
-  }, [lastMessage, setMessageHistory]);
+  }, [lastMessage]);
 
   function handleTaskTickClick(id: string) {
     sendMessage(
