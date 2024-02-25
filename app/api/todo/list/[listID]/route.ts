@@ -33,7 +33,7 @@ export async function GET(
         FROM "todoTasks"
         WHERE "list" = $1
         AND "open" IS TRUE
-        ORDER BY "order" DESC
+        ORDER BY "order"
         `,
     [listID]
   );

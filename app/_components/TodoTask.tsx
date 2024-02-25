@@ -7,11 +7,22 @@ interface Props {
   content: string;
   open: boolean;
   tickClick: (id: string) => void;
+  empty?: boolean;
+  onContentChange: (id: string, content: string) => void;
+  onBlur?: (id: string) => void;
 }
 
-export default function TodoTask({ id, content, open, tickClick }: Props) {
+export default function TodoTask({
+  id,
+  content,
+  open,
+  tickClick,
+  empty,
+  onContentChange,
+  onBlur,
+}: Props) {
   const tickButton = useRef<HTMLButtonElement>(null);
-  const contentSpan = useRef<HTMLSpanElement>(null);
+  const contentSpan = useRef<HTMLInputElement>(null);
 
   function handleTickClick(id: string) {
     tickButton.current?.classList.add("animate-tick");
@@ -28,35 +39,19 @@ export default function TodoTask({ id, content, open, tickClick }: Props) {
       <button
         ref={tickButton}
         onClick={() => handleTickClick(id)}
-        className="w-8 h-8 rounded-full border-2 border-black grid place-content-center"
+        className={`w-8 h-8 rounded-full border-2 border-black grid place-content-center ${
+          empty && "border-dotted border-opacity-50"
+        }`}
       >
         <div className="rounded-full w-6 h-6 bg-primary hidden"></div>
       </button>
-      <span ref={contentSpan}>{content}</span>
-
-      <style>
-        {`
-        .animate-tick {
-          border-color: #4CB9E7;
-          animation: tick 0.5s ease-in-out;
-        }
-        .animate-tick > div {
-          display: inline-block;
-        }
-
-        @keyframes tick {
-          0% {
-            transform: scale(0);
-          }
-          50% {
-            transform: scale(1.2);
-          }
-          100% {
-            transform: scale(1);
-          }
-        }
-        `}
-      </style>
+      <input
+        ref={contentSpan}
+        className="bg-transparent outline-none"
+        value={content}
+        onChange={(e) => onContentChange(id, e.target.value)}
+        onBlur={() => onBlur && onBlur(id)}
+      />
     </div>
   ) : null;
 }

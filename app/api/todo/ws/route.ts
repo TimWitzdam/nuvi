@@ -97,6 +97,46 @@ export async function SOCKET(
           );
         }
       });
+    } else if (parsedMessage.action === "create") {
+      const pgClient = new Client();
+      await pgClient.connect();
+
+      const maxOrder = await pgClient.query(
+        `
+            SELECT MAX("order") FROM "todoTasks" WHERE list = $1
+            `,
+        [parsedMessage.listID]
+      );
+
+      let newOrder = 0;
+      if (maxOrder.rows[0].max !== null) {
+        newOrder = maxOrder.rows[0].max + 1;
+      }
+
+      const userID = currentConnections.find(
+        (connection) => connection.listID === parsedMessage.listID
+      )?.userID;
+
+      const newTask = await pgClient.query(
+        `
+            INSERT INTO "todoTasks" (list, content, "order", open, owner) VALUES ($1, $2, $3, true, $4) RETURNING id
+            `,
+        [parsedMessage.listID, parsedMessage.content, newOrder, userID]
+      );
+
+      pgClient.end();
+
+      currentConnections.forEach((connection) => {
+        if (connection.listID === parsedMessage.listID) {
+          connection.socket.send(
+            JSON.stringify({
+              action: "create",
+              id: newTask.rows[0].id,
+              order: newOrder,
+            })
+          );
+        }
+      });
     } else {
       // Handle other actions
       console.log("Other action:", parsedMessage);
