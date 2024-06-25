@@ -1,3 +1,7 @@
+## 🔴 Development paused temporarily
+This project is currently just being used as a backend server for the nuvi mobile app. It will be replaced in the future with a desktop application instead of a web app.
+<br />
+<br />
 <div align="center">
     <a href="https://github.com/TimWitzdam/nuvi" align="center">
         <img src="https://i.imgur.com/gtUjxL7.png" alt="Nuvi Logo" height="250" />
